@@ -3,7 +3,8 @@ import random
 from datetime import datetime, timedelta
 import json
 import pandas as pd
-import matplotlib
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # Generate data for 50 characters
 NUM_ROWS = 1000
@@ -98,3 +99,12 @@ df["is_resistance"] = df["empire_or_resistance"] == "resistance"
 
 print(df)
 
+
+plt.figure(figsize=(8,6))
+sns.barplot(data=grouped_empire_res, x="empire_or_resistance", y="count", palette="viridis")
+
+plt.title("Distribution of Empire vs Resistance")
+plt.xlabel("empire_or_resistance")
+plt.ylabel("count")
+
+plt.show()
