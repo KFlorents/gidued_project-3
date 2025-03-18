@@ -77,14 +77,18 @@ with open(OUTPUT_FILE, "w", newline="") as file:
 
 print("Data generation complete.")
 
+
 #Reading data from csv into pandas df
 df = pd.read_csv('troop_movements.csv')
 
 #groupe data for counts of empire vs resistence
 print (df)
 
-grouped_empire_vs_resistance = df.groupby(['empire_or_resistance']).count()
-#grouped_count = df.groupby[empire_or_resistance]
 
-print(grouped_empire_vs_resistance)
+grouped_empire_res = df["empire_or_resistance"].value_counts().reset_index()
+grouped_count_homeworld = df["homeworld"].value_counts().reset_index()
+grouped_count_unit_type = df["unit_type"].value_counts().reset_index()
+print(grouped_empire_res)
+print(grouped_count_homeworld)
+print(grouped_count_unit_type)
 
