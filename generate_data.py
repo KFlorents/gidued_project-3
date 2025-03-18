@@ -5,6 +5,10 @@ import json
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import accuracy_score, classification_report
 
 # Generate data for 50 characters
 NUM_ROWS = 1000
@@ -107,4 +111,26 @@ plt.title("Distribution of Empire vs Resistance")
 plt.xlabel("empire_or_resistance")
 plt.ylabel("count")
 
-plt.show()
+# plt.show()
+
+
+# Prediction model
+X_encoded = pd.get_dummies(df[["homeworld", "unit_type"]])
+y = df["empire_or_resistance"].map({"empire": 0, "resistance": 1})
+
+X_train, X_test, y_train, y_test = train_test_split(X_encoded, y, test_size=0.2, random_state=42)
+
+model = DecisionTreeClassifier(random_state=42)
+model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+
+accuracy = accuracy_score(y_test, y_pred)
+classification_rep = classification_report(y_test, y_pred, target_names=["Empire", "Resistance"])
+print("Accuracy: ", accuracy)
+
+# Get feature importances
+importances = model.feature_importances_
+feature_importances = pd.DataFrame({"Feature": X_encoded.columns, "Importance": importances})
+
+
