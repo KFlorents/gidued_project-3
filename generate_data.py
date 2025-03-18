@@ -92,3 +92,8 @@ print(grouped_empire_res)
 print(grouped_count_homeworld)
 print(grouped_count_unit_type)
 
+# Create a new feature 'is_resistance'
+df["is_resistance"] = df["empire_or_resistance"] == "resistance"
+
+print(df)
+
