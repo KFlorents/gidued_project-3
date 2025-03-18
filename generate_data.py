@@ -9,6 +9,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import accuracy_score, classification_report
+import pickle
 
 # Generate data for 50 characters
 NUM_ROWS = 1000
@@ -127,10 +128,33 @@ y_pred = model.predict(X_test)
 
 accuracy = accuracy_score(y_test, y_pred)
 classification_rep = classification_report(y_test, y_pred, target_names=["Empire", "Resistance"])
-print("Accuracy: ", accuracy)
+
 
 # Get feature importances
 importances = model.feature_importances_
 feature_importances = pd.DataFrame({"Feature": X_encoded.columns, "Importance": importances})
+
+# Sort features
+feature_importances = feature_importances.sort_values(by="Importance", ascending=False)
+
+#Creat a bar plot for feature importances
+plt.figure(figsize=(10,6))
+sns.barplot(data=feature_importances, x="Feature", y="Importance", palette="viridis")
+plt.title("Feature Importances")
+plt.xlabel("Feature")
+plt.ylabel("Importance")
+
+plt.xticks(rotation=90)
+plt.show()
+
+print(f"Accuracy: {accuracy:.2f} ")
+print("\nClassification Report:\n", classification_rep)
+
+# Save the model
+model_filename = "trained_model.pkl"
+with open(model_filename, "wb") as file:
+    pickle.dump(model, file)
+
+print(f"Model saved successfully as {model_filename}")
 
 
