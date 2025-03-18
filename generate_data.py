@@ -10,6 +10,8 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import accuracy_score, classification_report
 import pickle
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import OneHotEncoder
 
 # Generate data for 50 characters
 NUM_ROWS = 1000
@@ -148,13 +150,29 @@ plt.xticks(rotation=90)
 plt.show()
 
 print(f"Accuracy: {accuracy:.2f} ")
-print("\nClassification Report:\n", classification_rep)
+# print("\nClassification Report:\n", classification_rep)
 
 # Save the model
 model_filename = "trained_model.pkl"
 with open(model_filename, "wb") as file:
     pickle.dump(model, file)
 
-print(f"Model saved successfully as {model_filename}")
+with open(model_filename, "rb") as file:
+    model = pickle.load(file)
+
+parquet_filename = "troop_movements_1m.parquet"
+df = pd.read_parquet(parquet_filename)
 
 
+
+categorial_features = ["homeworld", "unit_type"]
+
+preprocessor = ColumnTransformer(
+    transformers=[("cat", OneHotEncoder(handle_unknown="ignore"), categorial_features)]
+)
+
+df_new = preprocessor.fit_transform(df)
+
+df_new = pd.DataFrame(df_new, columns=preprocessor.get_feature_names_out())
+
+df["predictions"] = model.predict(df_new)
